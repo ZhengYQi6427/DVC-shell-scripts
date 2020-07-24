@@ -49,7 +49,7 @@ getCode()
 
 
 ##### MAIN
-getCode
+# getCode
 
 if [ "$needInitialize" = "true" ]; then
 	init

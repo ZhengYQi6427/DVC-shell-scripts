@@ -1,8 +1,13 @@
+[Basics]
+needInitialze=true
+gitHubRepo=https://github.com/ZhengYQi6427/research.traffic.dvc.example.git
+
 [Remote]
 needSetRemote=true
 dataRemote=ssh:ra_yz3622@128.59.20.251:/project/research.traffic/Data/Videos/Videos.processed
+NAS_account=ra_yz3622
+NAS_password=summer
 cfgFilesRemote=https://github.com/zk2172-columbia/ProjectTrafficIntersection.COSMOS.V2/blob/zy2318_deepstream/Deepstream/YOLO/modified_files/
-gitHubRepo=https://github.com/ZhengYQi6427/research.traffic.dvc.example.git
 
 [Data]
 needGetData=false
