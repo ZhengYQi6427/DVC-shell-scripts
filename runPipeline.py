@@ -12,6 +12,9 @@ class Pipeline:
         self.config.read(filename)
         # print(self.config.get("Data", "needGetData"))
 
+    def getRepo(self):
+        
+
     def setRemote(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
         self.cfgFilesRemote = self.config.get("Remote", "cfgFilesRemote")
