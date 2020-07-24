@@ -1,0 +1,45 @@
+[Remote]
+needSetRemote=false
+dataRemote=ssh:ra_yz3622@128.59.20.251:/project/research.traffic/Data/Data.intermediate
+cfgFilesRemote=https://github.com/zk2172-columbia/ProjectTrafficIntersection.COSMOS.V2/blob/zy2318_deepstream/Deepstream/YOLO/modified_files
+
+[Data]
+needGetData=false
+dataFileList=
+cfgFileList=
+
+[Preprocess]
+needPreprocess=false
+scrList=json2voc.py, voc2text.py
+outputs=
+
+[Train]
+needTrain=false
+initialWeight=https://pjreddie.com/media/files/darknet53.conv.74
+data=train_data/traffic.data
+configuration=train_data/traffic.cfg
+scr=../darknet/darknet
+outputs=/backup/final.weights
+
+[Validate]
+needValidate=true
+directory=~/dvc/dvc-YoloDarknet-example
+input=/test_traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4.txt
+data=/train_data/traffic.data
+configuration=/train_data/traffic.cfg
+weights=/backup/traffic_final.weights
+src=../darknet/darknet
+outputs=/results/comp4_det_test_Vehicle.txt, /results/comp4_det_test_Pedestrian.txt
+
+[ResultConvert]
+needResultConvert=true
+directory=~/dvc/dvc-YoloDarknet-example
+inputs=/test_traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4.txt, /results
+src=darknet2maskrcnn.py
+outputs=result_in_json/traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration_result.json
+
+[Evaluate]
+needEvaluate=true
+directory=~/dvc/dvc-YoloDarknet-example
+inputs=/test_traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4.txt, /result_in_json/traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration_result.json
+src=evaluate.py
