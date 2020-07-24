@@ -10,26 +10,26 @@ class Pipeline:
         self.experimentName = filename[:-9]
         self.config = configparser.ConfigParser()
         self.config.read(filename)
+        # get code from gthub
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
-        # print(self.config.get("Data", "needGetData"))
-
-    def getRepo(self):
         try:
             os.system("git clone " + self.gitHubRepo)
         except Exception as e:
             print(e)
+        # all following steps would be done inside local repo
         os.system("cd " + self.repoName)
+        
+
+    def getRepo(self):
         try:
-            os.system("init dvc")
+            os.system("init dvc ")
             os.system("git add . ")
             os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
             print(e)
-        os.system("cd ..")
 
     def setRemote(self):
-        os.system("cd " + self.repoName)
         self.dataRemote = self.config.get("Remote", "dataRemote")
         self.cfgFilesRemote = self.config.get("Remote", "cfgFilesRemote")
         cmd = "dvc remote add  -f dataRemote " + self.dataRemote
@@ -40,7 +40,6 @@ class Pipeline:
         os.system(cmd)
         os.system("git commit .dvc/config -m 'Configure data storage'")
         # os.system("dvc push -r gitHubRepo")
-        os.system("cd ..")
 
     def getData(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
@@ -72,7 +71,7 @@ class Pipeline:
         os.system("git add /cfg")
         os.system("git commit -m 'Add config files to project'")
 
-        os.system("dvc push -q")
+        # os.system("dvc push -q")
 
     def preprocess(self):
         scrList = self.config.get("Preprocess", "scrList").split(', ')
@@ -204,4 +203,5 @@ if __name__ == "__main__":
         newPip.evaluate()
 
     print("=========================Finish building " + newPip.experimentName + "=========================")
+    os.system("cd .. ")
 
