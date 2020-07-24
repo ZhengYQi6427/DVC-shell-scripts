@@ -14,8 +14,8 @@ class Pipeline:
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
 
-        os.system("mkdir " + filename[:-9])
-        os.system("cd " + filename[:-9])
+        os.system("mkdir ../" + filename[:-9])
+        os.system("cd ../" + filename[:-9])
         try:
             os.system("git clone " + self.gitHubRepo)
         except Exception as e:
