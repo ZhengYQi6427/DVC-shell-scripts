@@ -1,9 +1,8 @@
 [Basics]
-needInitialze=true
 gitHubRepo=https://github.com/ZhengYQi6427/research.traffic.dvc.example.git
 
 [Remote]
-needSetRemote=true
+needSetRemote=false
 dataRemote=ssh:ra_yz3622@128.59.20.251:/project/research.traffic/Data/Videos/Videos.processed
 NAS_account=ra_yz3622
 NAS_password=summer

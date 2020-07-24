@@ -13,21 +13,25 @@ class Pipeline:
         # get code from gthub
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
+
+        os.system("mkdir " + filename[:-9])
+        os.system("cd " + filename[:-9])
         try:
             os.system("git clone " + self.gitHubRepo)
         except Exception as e:
             print(e)
-        # all following steps would be done inside local repo
+        # all following steps would be done inside this local repo
         os.system("cd " + self.repoName)
         
 
-    def getRepo(self):
+    def initDVC(self):
         try:
-            os.system("init dvc ")
-            os.system("git add . ")
-            os.system("git commit -m 'Initialize DVC project'")
+            if not os.path.isfile(".dvc"):
+                os.system("init dvc ")
+                os.system("git add . ")
+                os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
-            print(e)
+            print(e) 
 
     def setRemote(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
@@ -186,6 +190,8 @@ if __name__ == "__main__":
     print("=======================Start building " + newPip.experimentName + "===========================")
 
     print("Pipeline running ......")
+
+    newPip.initDVC();
 
     if newPip.config.get("Data", "needGetData") == "true":
         newPip.getData()
