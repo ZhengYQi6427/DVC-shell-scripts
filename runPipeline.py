@@ -13,14 +13,16 @@ class Pipeline:
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
         
-        pipeName = filename.split("/")[-1][:-9]
-        if not os.path.exists("../" + pipeName):
-            os.system("mkdir ../" + pipeName)
+        self.pipeName = filename.split("/")[-1][:-9]
+        if not os.path.exists("../" + self.pipeName):
+            os.system("mkdir ../" + self.pipeName)
+        if not os.path.exists("../" + self.pipeName + "/" + self.repoName):
+            os.system("mkdir ../" + self.pipeName + "/" + self.repoName)
         try:
-            os.system("cd ../" + pipeName)
             # if os.path.exists(repoName):
                 # os.system("rm -rf " + repoName)
-            os.system("git clone " + self.gitHubRepo)
+            os.system("git clone " + self.gitHubRepo + 
+                " ../" + self.pipeName + "/" + self.repoName)
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
@@ -190,7 +192,7 @@ class Pipeline:
 
 if __name__ == "__main__":
     newPip = Pipeline(sys.argv[1])
-    print("=======================Start building " + newPip.experimentName + "===========================")
+    print("=======================Start building " + newPip.pipeName + "===========================")
 
     print("Pipeline running ......")
 
@@ -211,6 +213,6 @@ if __name__ == "__main__":
     if newPip.config.get("Evaluate", "needEvaluate") == "true":
         newPip.evaluate()
 
-    print("=========================Finish building " + newPip.experimentName + "=========================")
+    print("=========================Finish building " + newPip.pipeName + "=========================")
     os.system("cd .. ")
 
