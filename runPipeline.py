@@ -7,16 +7,19 @@ import configparser
 
 class Pipeline:
     def __init__(self, filename):
-        self.experimentName = filename[:-9]
         self.config = configparser.ConfigParser()
         self.config.read(filename)
         # get code from gthub
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
-
+        
+        pipeName = filename.split("/")[-1][:-9]
+        if not os.path.exists("../" + pipeName):
+            os.system("mkdir ../" + pipeName)
         try:
-            os.system("mkdir ../" + filename[:-9])
-            os.system("cd ../" + filename[:-9])
+            os.system("cd ../" + pipeName)
+            # if os.path.exists(repoName):
+                # os.system("rm -rf " + repoName)
             os.system("git clone " + self.gitHubRepo)
         except Exception as e:
             print(e)
