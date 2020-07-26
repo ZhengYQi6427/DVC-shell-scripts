@@ -14,10 +14,9 @@ class Pipeline:
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
         
         self.pipeName = filename.split("/")[-1][:-9]
-        if not os.path.exists("../" + self.pipeName):
-            os.system("mkdir ../" + self.pipeName)
-        if not os.path.exists("../" + self.pipeName + "/" + self.repoName):
-            os.system("mkdir ../" + self.pipeName + "/" + self.repoName)
+        self.makedir("../" + self.pipeName)
+        self.makedir("../" + self.pipeName + "/" + self.repoName)
+        
         try:
             # if os.path.exists(repoName):
                 # os.system("rm -rf " + repoName)
@@ -32,7 +31,7 @@ class Pipeline:
     def initDVC(self):
         try:
             if not os.path.isfile(".dvc"):
-                os.system("init dvc ")
+                os.system("dvc init")
                 os.system("git add . ")
                 os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
@@ -53,16 +52,17 @@ class Pipeline:
     def getData(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
         self.cfgFilesRemote = self.config.get("Remote", "cfgFileRemote")
-        if not os.path.isfile("/data"):
-            os.system("mkdir data")
-        if not os.path.isfile("/cfg"):
-            os.system("mkdir cfg")
+        self.makedir("/data")
+        self.makedir("/data/train")
+        self.makedir("/data/test")
+        self.makedir("/config")
 
-        dataFileList = self.config.get("Data", "dataFileList").split(', ')
+        trainFileList = self.config.get("Data", "trainFileList").split(', ')
         cfgFileList = self.config.get("Data", "cfgFileList").split(', ')
+        testFileList = self.config.get("Data", "testFileList").split(', ')
 
         for file in dataFileList:
-            cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/" + file
+            cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/train/" + file
             os.system(cmd)
             # Track a data file
             cmd = "dvc add data/" + file
@@ -72,7 +72,7 @@ class Pipeline:
         os.system("git commit -m 'Add raw data to project'")
 
         for file in cfgFileList:
-            cmd = "dvc get -q " + self.cfgFilesRemote + "/" + file + " -o cfg/" + file
+            cmd = "dvc get -q " + self.cfgFilesRemote + "/" + file + " -o config/" + file
             os.system(cmd)
             # Track a data file
             cmd = "dvc add cfg/" + file
@@ -188,6 +188,10 @@ class Pipeline:
 
     def showPipeline(self):
         os.system("tree -a")
+
+    def makedir(self, dir):
+        if not os.path.isfile(dir):
+            os.system("mkdir " + dir)
 
 
 if __name__ == "__main__":

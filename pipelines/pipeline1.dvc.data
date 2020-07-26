@@ -10,8 +10,9 @@ cfgFilesRemote=https://github.com/zk2172-columbia/ProjectTrafficIntersection.COS
 
 [Data]
 needGetData=false
-dataFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
+trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4.json
 cfgFileList=yolov3_traffic.cfg
+testFileList=
 
 [Preprocess]
 needPreprocess=false
