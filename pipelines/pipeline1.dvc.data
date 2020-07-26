@@ -1,5 +1,5 @@
 [Basics]
-gitHubRepo=https://github.com/ZhengYQi6427/research.traffic.dvc.example.git
+gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
 needSetRemote=false
@@ -10,7 +10,11 @@ cfgFilesRemote=https://github.com/zk2172-columbia/ProjectTrafficIntersection.COS
 
 [Data]
 needGetData=false
+<<<<<<< HEAD
 trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4.json
+=======
+dataFileList=HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4
+>>>>>>> fcdeb134784e25e5868a33a90d542cf3e31d0fb7
 cfgFileList=yolov3_traffic.cfg
 testFileList=
 
