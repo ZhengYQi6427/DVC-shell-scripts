@@ -18,15 +18,12 @@ class Pipeline:
         self.makedir("../" + self.pipeName + "/" + self.repoName)
         
         try:
-            # if os.path.exists(repoName):
-                # os.system("rm -rf " + repoName)
             os.system("git clone " + self.gitHubRepo + 
                 " ../" + self.pipeName + "/" + self.repoName)
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
-        os.chdir("../" + self.pipeName + "/" + self.repoName)
-        
+        os.chdir("../" + self.pipeName + "/" + self.repoName)       
 
     def initDVC(self):
         try:
@@ -35,14 +32,11 @@ class Pipeline:
                 os.system("git add . ")
                 os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
-            print(e) 
+            print(e)
 
     def setRemote(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
-        self.cfgFilesRemote = self.config.get("Remote", "cfgFilesRemote")
         cmd = "dvc remote add  -f dataRemote " + self.dataRemote
-        os.system(cmd)
-        cmd = "dvc remote add -f cfgFilesRemote " + self.cfgFilesRemote
         os.system(cmd)
         cmd = "dvc remote add -f gitHubRepo" + self.gitHubRepo
         os.system(cmd)
@@ -218,5 +212,5 @@ if __name__ == "__main__":
         newPip.evaluate()
 
     print("=========================Finish building " + newPip.pipeName + "=========================")
-    os.system("cd .. ")
+    os.chdir("../../DVC-shell-scripts")
 
