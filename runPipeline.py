@@ -27,19 +27,19 @@ class Pipeline:
 
     def initDVC(self):
         try:
-            if not os.path.isfile(".dvc"):
-                os.system("dvc init -f")
-                os.system("git add . ")
-                os.system("git commit -m 'Initialize DVC project'")
+            os.system("dvc init -f")
+            os.system("git add . ")
+            os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
             print(e)
 
     def setRemote(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
-        cmd = "dvc remote add  -f dataRemote " + self.dataRemote
+        cmd = "dvc remote add -f dataRemote " + self.dataRemote
         os.system(cmd)
-        cmd = "dvc remote add -f gitHubRepo" + self.gitHubRepo
+        cmd = "dvc remote add -f gitHubRepo " + self.gitHubRepo
         os.system(cmd)
+        os.system("git add . ")
         os.system("git commit .dvc/config -m 'Configure data storage'")
         # os.system("dvc push -r gitHubRepo")
 
