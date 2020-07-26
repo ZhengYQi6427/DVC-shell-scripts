@@ -25,7 +25,7 @@ class Pipeline:
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
-        os.system("cd " + self.repoName)
+        os.chdir("../" + self.pipeName + self.repoName)
         
 
     def initDVC(self):
