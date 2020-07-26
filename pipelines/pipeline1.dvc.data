@@ -2,17 +2,15 @@
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
-needSetRemote=true
+needSetRemote=false
 dataRemote=ssh:ra_yz3622@128.59.20.251:/project/research.traffic/Data/Videos/Videos.processed
 NAS_account=ra_yz3622
 NAS_password=summer
 
 [Data]
-needGetData=false
-trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4.json
-dataFileList=HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4
-cfgFileList=yolov3_traffic.cfg
-testFileList=
+needGetData=true
+trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
+testFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 
 [Preprocess]
 needPreprocess=false

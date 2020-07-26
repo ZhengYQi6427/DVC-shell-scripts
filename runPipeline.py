@@ -45,34 +45,30 @@ class Pipeline:
 
     def getData(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
-        self.cfgFilesRemote = self.config.get("Remote", "cfgFileRemote")
         self.makedir("/data")
         self.makedir("/data/train")
         self.makedir("/data/test")
-        self.makedir("/config")
 
         trainFileList = self.config.get("Data", "trainFileList").split(', ')
-        cfgFileList = self.config.get("Data", "cfgFileList").split(', ')
         testFileList = self.config.get("Data", "testFileList").split(', ')
 
-        for file in dataFileList:
+        for file in trainFileList:
             cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/train/" + file
             os.system(cmd)
             # Track a data file
-            cmd = "dvc add data/" + file
+            cmd = "dvc add data/train" + file
             os.system(cmd)
+
+        for file in testFileList:
+            cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/test/" + file
+            os.system(cmd)
+            # Track a data file
+            cmd = "dvc add data/test" + file
+            os.system(cmd)
+
         # Commit to Git
         os.system("git add /data")
         os.system("git commit -m 'Add raw data to project'")
-
-        for file in cfgFileList:
-            cmd = "dvc get -q " + self.cfgFilesRemote + "/" + file + " -o config/" + file
-            os.system(cmd)
-            # Track a data file
-            cmd = "dvc add cfg/" + file
-            os.system(cmd)
-        os.system("git add /cfg")
-        os.system("git commit -m 'Add config files to project'")
 
         # os.system("dvc push -q")
 
