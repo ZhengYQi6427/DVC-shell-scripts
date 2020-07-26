@@ -28,7 +28,7 @@ class Pipeline:
     def initDVC(self):
         try:
             if not os.path.isfile(".dvc"):
-                os.system("dvc init")
+                os.system("dvc init -f")
                 os.system("git add . ")
                 os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
