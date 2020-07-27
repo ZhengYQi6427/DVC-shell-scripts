@@ -57,13 +57,16 @@ class Pipeline:
         self.makedir("backup")
 
         print("##### getting data files for training")
-        self.getFromNAS("data/train/", self.trainFileList)
+        if self.trainFileList:
+            self.getFromNAS("data/train/", self.trainFileList)
         
         print("##### getting data files for testing")
-        self.getFromNAS("data/test/", self.testFileList)
+        if self.testFileList:
+            self.getFromNAS("data/test/", self.testFileList)
 
         print("##### getting .weights")
-        self.getFromNAS("backup/", self.weights)
+        if self.weights:
+            self.getFromNAS("backup/", self.weights)
 
         # Commit to Git
         os.system("git commit -m 'Track data with dvc'")
@@ -97,7 +100,7 @@ class Pipeline:
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 1, 
-            "valid = " + str(self.trainSets).strip('[]'))
+            "valid = " + str(self.trainSets).strip('['']') + "\n")
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 
@@ -128,7 +131,7 @@ class Pipeline:
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
-            "valid = " + str(self.testSets).strip('[]'))
+            "valid = " + str(self.testSets).strip('['']') + "\n")
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 
