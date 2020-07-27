@@ -3,7 +3,7 @@ gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
 needSetRemote=false
-dataRemote=ssh:ra_yz3622@128.59.20.251:/project/research.traffic/Data/Videos/Videos.processed
+dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic/Data/Videos/Videos.processed
 NAS_account=ra_yz3622
 NAS_password=summer
 
