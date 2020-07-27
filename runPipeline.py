@@ -44,7 +44,7 @@ class Pipeline:
         cmd = "dvc remote add -f gitHubRepo " + self.gitHubRepo
         os.system(cmd)
         os.system("git add . ")
-        os.system("git commit .dvc/config -m 'Configure data storage'")
+        os.system("git commit .dvc/config -m 'Set dvc remote'")
         # os.system("dvc push -r gitHubRepo")
 
     def getData(self):
@@ -144,13 +144,11 @@ class Pipeline:
                + self.config.get("Validate", "weights") + " -dont_show "
 
         # print(cmd)
-        '''
         os.system(cmd)
 
         os.system("git add validation.dvc")
         os.system("git commit -m 'Create Stage: validation'")
-        os.system("dvc push -q")
-        '''
+        # os.system("dvc push -q")
 
     def resultConvert(self):
         # for darknet usecase only
