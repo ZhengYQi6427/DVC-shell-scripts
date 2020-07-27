@@ -45,6 +45,7 @@ class Pipeline:
 
     def getData(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
+        os.system("pwd")
         self.makedir("/data")
         self.makedir("/data/train")
         self.makedir("/data/test")
@@ -52,18 +53,20 @@ class Pipeline:
         trainFileList = self.config.get("Data", "trainFileList").split(', ')
         testFileList = self.config.get("Data", "testFileList").split(', ')
 
+        print("##### getting data files for training")
         for file in trainFileList:
-            cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/train/" + file
+            cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/train/"
             os.system(cmd)
             # Track a data file
-            cmd = "dvc add data/train" + file
+            cmd = "dvc add data/train/" + file
             os.system(cmd)
-
+        
+        print("##### getting data files for testing")
         for file in testFileList:
-            cmd = "dvc get -q " + self.dataRemote + "/" + file + " -o data/test/" + file
+            cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/test/"
             os.system(cmd)
             # Track a data file
-            cmd = "dvc add data/test" + file
+            cmd = "dvc add data/test/" + file
             os.system(cmd)
 
         # Commit to Git
