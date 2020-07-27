@@ -136,9 +136,9 @@ class Pipeline:
             input += " -d " + file
         configuration = " -d " + self.config.get("Validate", "configuration")
         weights = " -d " + self.config.get("Validate", "weights")
-        outputs = " -O ./results/"
+        outputs = " --outs-persist ./results/"
 
-        cmd += input + configuration + weights + outputs + " "
+        cmd += input + configuration + weights + outputs + " --force "
         cmd += self.config.get("Validate", "src") + " detector valid " \
                + self.config.get("Validate", "data") + self.config.get("Validate", "configuration")\
                + self.config.get("Validate", "weights") + " -dont_show "
@@ -201,14 +201,6 @@ class Pipeline:
         cmd = "git tag -a '" + self.experimentName + "' -m '" + self.experimentName + " evaluation'"
         # print(cmd)
         # os.system(cmd)
-
-
-
-    def showMetric(self):
-        os.system("dvc metrics show")
-
-    def showPipeline(self):
-        os.system("tree -a")
 
     def makedir(self, dir):
         if not os.path.isfile(dir):
