@@ -100,7 +100,7 @@ class Pipeline:
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 1, 
-            "valid = " + str(self.trainSets).strip('['']') + "\n")
+            "valid = " + ', '.join(self.trainSets) + "\n")
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 
@@ -131,7 +131,7 @@ class Pipeline:
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
-            "valid = " + str(self.testSets).strip('['']') + "\n")
+            "valid = " + ', '.join(self.testSets) + "\n")
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 

@@ -2,13 +2,13 @@
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
-needSetRemote=true
+needSetRemote=false
 dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic
 NAS_account=ra_yz3622
 NAS_password=summer
 
 [Data]
-needGetData=true
+needGetData=false
 trainFileList=
 testFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 weights=/Models/YOLOV3_Models/traffic_final.weights
