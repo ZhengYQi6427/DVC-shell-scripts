@@ -2,7 +2,7 @@
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
-needSetRemote=false
+needSetRemote=true
 dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic/Data/Videos/Videos.processed
 NAS_account=ra_yz3622
 NAS_password=summer
@@ -12,10 +12,13 @@ needGetData=true
 trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 testFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 
-[Preprocess]
+[TrainSet]
 needPreprocess=false
-scrList=json2voc.py, voc2text.py
-outputs=
+scr=json2voc.py, voc2text.py
+
+[TestSet]
+needPreprocess=true
+scr=generate_testset.py
 
 [Train]
 needTrain=false

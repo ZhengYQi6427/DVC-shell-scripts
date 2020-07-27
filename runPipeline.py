@@ -9,9 +9,12 @@ class Pipeline:
     def __init__(self, filename):
         self.config = configparser.ConfigParser()
         self.config.read(filename)
-        # get code from gthub
+
+        # get code from github
         self.gitHubRepo = self.config.get("Basics", "gitHubRepo")
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
+        self.trainFileList = self.config.get("Data", "trainFileList").split(', ')
+        self.testFileList = self.config.get("Data", "testFileList").split(', ')
         
         self.pipeName = filename.split("/")[-1][:-9]
         self.makedir("../" + self.pipeName)
@@ -50,36 +53,39 @@ class Pipeline:
         self.makedir("data/train")
         self.makedir("data/test")
 
-        trainFileList = self.config.get("Data", "trainFileList").split(', ')
-        testFileList = self.config.get("Data", "testFileList").split(', ')
-
         print("##### getting data files for training")
-        for file in trainFileList:
+        for file in self.trainFileList:
             cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/train/"
             os.system(cmd)
             # Track a data file
             cmd = "dvc add data/train/" + file
             os.system(cmd)
+            os.system("git add ./data/train/" + file + ".dvc")
         
         print("##### getting data files for testing")
-        for file in testFileList:
+        for file in self.testFileList:
             cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/test/"
             os.system(cmd)
             # Track a data file
             cmd = "dvc add data/test/" + file
             os.system(cmd)
+            os.system("git add ./data/test/" + file + ".dvc")
 
         # Commit to Git
-        os.system("git add /data")
-        os.system("git commit -m 'Add raw data to project'")
+        os.system("git commit -m 'Track data with dvc'")
 
         # os.system("dvc push -q")
 
-    def preprocess(self):
-        scrList = self.config.get("Preprocess", "scrList").split(', ')
-        outputs = self.config.get("Preprocess", "output").split(', ')
+    def getTrainSet(self):
+        scrList = self.config.get("TrainSet", "scr").split(', ')
+        outputs = []
+        prefix = "train_"
+
+        for file in self.trainFileList:
+            outputs.append(prefix + file + ".txt")
+
         cmd1 = "dvc run " \
-               "-f preprocess.dvc "
+               "-f getTrainSet.dvc "
         cmd2 = ""
         cmd3 = "python "
         for scr in scrList:
@@ -87,12 +93,38 @@ class Pipeline:
             cmd3 += scr + " && "
         for output in outputs:
             cmd2 += "-o " + output + " "
-        cmd = cmd1 + cmd2 + "" if cmd3 == "python " else cmd3[:-3]
+        cmd3 = "" if cmd3 == "python " else cmd3[:-3]
+        cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
         os.system(cmd)
 
-        os.system("git add preprocess.dvc")
-        os.system("git commit -m 'Create Stage: preprocess'")
-        os.system("dvc push -q")
+        os.system("git add getTrainSet.dvc .gitignore")
+        os.system("git commit -m 'Create Stage: generate trainset'")
+        # os.system("dvc push -q")
+
+    def getTestSet(self):
+        scrList = self.config.get("TestSet", "scr").split(', ')
+        outputs = []
+        prefix = "test_"
+
+        for file in self.testFileList:
+            outputs.append(prefix + file + ".txt")
+
+        cmd1 = "dvc run " \
+               "-f getTestSet.dvc "
+        cmd2 = ""
+        cmd3 = "python "
+        for scr in scrList:
+            cmd1 += "-d " + scr + " "
+            cmd3 += scr + " && "
+        for output in outputs:
+            cmd2 += "-o " + output + " "
+        cmd3 = "" if cmd3 == "python " else cmd3[:-3]
+        cmd = cmd1 + cmd2 + cmd3 + "./data/test/"
+        os.system(cmd)
+
+        os.system("git add getTestSet.dvc .gitignore")
+        os.system("git commit -m 'Create Stage: generate testset'")
+        # os.system("dvc push -q")
 
     def train(self):
         # for darknet usecase only
@@ -199,8 +231,10 @@ if __name__ == "__main__":
         newPip.getData()
     if newPip.config.get("Remote", "needSetRemote") == "true":
         newPip.setRemote()
-    if newPip.config.get("Preprocess", "needPreprocess") == "true":
-        newPip.preprocess()
+    if newPip.config.get("TrainSet", "needPreprocess") == "true":
+        newPip.getTrainSet()
+    if newPip.config.get("TestSet", "needPreprocess") == "true":
+        newPip.getTestSet()
     if newPip.config.get("Train", "needTrain") == "true":
         newPip.train()
     if newPip.config.get("Validate", "needValidate") == "true":
