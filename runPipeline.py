@@ -46,9 +46,9 @@ class Pipeline:
     def getData(self):
         self.dataRemote = self.config.get("Remote", "dataRemote")
         os.system("pwd")
-        self.makedir("/data")
-        self.makedir("/data/train")
-        self.makedir("/data/test")
+        self.makedir("data")
+        self.makedir("data/train")
+        self.makedir("data/test")
 
         trainFileList = self.config.get("Data", "trainFileList").split(', ')
         testFileList = self.config.get("Data", "testFileList").split(', ')
