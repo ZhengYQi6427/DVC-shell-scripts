@@ -95,6 +95,14 @@ class Pipeline:
         os.system("git commit -m 'Create Stage: generate trainset'")
         # os.system("dvc push -q")
 
+        # modify config/traffic.data
+        with open("config/traffic.data", "w") as file:
+            data = file.readlines()
+            data[1] = "train = " + str(trainSets).strip('[]')
+            file.writelines(data)
+        os.system("git add config/traffic.data")
+        os.system("git commit -m 'modify traffic.data'")
+
     def getTestSet(self):
         scrList = self.config.get("TestSet", "scr").split(', ')
         self.testSets = []
@@ -120,6 +128,14 @@ class Pipeline:
         os.system("git commit -m 'Create Stage: generate testset'")
         # os.system("dvc push -q")
 
+        # modify config/traffic.data
+        with open("config/traffic.data", "w") as file:
+            data = file.readlines()
+            data[2] = "valid = " + str(testSets).strip('[]')
+            file.writelines(data)
+        os.system("git add config/traffic.data")
+        os.system("git commit -m 'modify traffic.data'")
+
     def train(self):
         # for darknet usecase only
         scr = self.config.get("Train", "scr")
@@ -129,19 +145,19 @@ class Pipeline:
         if not self.testSets:
             print("No testData available for validation")
             exit(0)
+        self.makedir("results")
 
         cmd = "dvc run -n validation"
 
-        for file in self.testSets:
-            input += " -d " + file
+        data = " -d " + self.config.get("Validate", "data")
         configuration = " -d " + self.config.get("Validate", "configuration")
         weights = " -d " + self.config.get("Validate", "weights")
         outputs = " --outs-persist ./results/"
 
-        cmd += input + configuration + weights + outputs + " --force "
+        cmd += data + configuration + weights + outputs + " -w ./ --force "
         cmd += self.config.get("Validate", "src") + " detector valid " \
-               + self.config.get("Validate", "data") + self.config.get("Validate", "configuration")\
-               + self.config.get("Validate", "weights") + " -dont_show "
+               + self.config.get("Validate", "data") + " " + self.config.get("Validate", "configuration")\
+               + " " + self.config.get("Validate", "weights") + " -dont_show "
 
         # print(cmd)
         os.system(cmd)
@@ -215,7 +231,7 @@ class Pipeline:
                 # Track a data file
                 cmd = "dvc add " + dir + name
                 os.system(cmd)
-                os.system("git add " + dir + name + ".dvc")
+                os.system("git add " + dir + name + ".dvc" + " .gitignore")
         except Exception as e:
             print(e)
 
@@ -237,7 +253,7 @@ if __name__ == "__main__":
         newPip.train()
     newPip.getTestSet()
     if newPip.config.get("Validate", "needValidate") == "true":
-        newPip.getTestSet()
+        # newPip.getTestSet()
         newPip.validate()
     if newPip.config.get("ResultConvert", "needResultConvert") == "true":
         newPip.resultConvert()
