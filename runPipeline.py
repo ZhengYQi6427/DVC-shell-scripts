@@ -15,6 +15,7 @@ class Pipeline:
         self.repoName = self.gitHubRepo.split("/")[-1][:-4]
         self.trainFileList = self.config.get("Data", "trainFileList").split(', ')
         self.testFileList = self.config.get("Data", "testFileList").split(', ')
+        self.weights = self.config.get("Data", "weights").split(', ')
         
         self.pipeName = filename.split("/")[-1][:-9]
         self.makedir("../" + self.pipeName)
@@ -47,29 +48,22 @@ class Pipeline:
         # os.system("dvc push -r gitHubRepo")
 
     def getData(self):
+        # get data from Synology NAS
         self.dataRemote = self.config.get("Remote", "dataRemote")
         os.system("pwd")
         self.makedir("data")
         self.makedir("data/train")
         self.makedir("data/test")
+        self.makedir("backup")
 
         print("##### getting data files for training")
-        for file in self.trainFileList:
-            cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/train/"
-            os.system(cmd)
-            # Track a data file
-            cmd = "dvc add data/train/" + file
-            os.system(cmd)
-            os.system("git add ./data/train/" + file + ".dvc")
+        getFromNAS("data/train/", self.trainFileList)
         
         print("##### getting data files for testing")
-        for file in self.testFileList:
-            cmd = "scp " + self.dataRemote[4:] + "/" + file + " data/test/"
-            os.system(cmd)
-            # Track a data file
-            cmd = "dvc add data/test/" + file
-            os.system(cmd)
-            os.system("git add ./data/test/" + file + ".dvc")
+        getFromNAS("data/test/", self.testFileList)
+
+        print("##### getting .weights")
+        getFromNAS("backup/", self.weights)
 
         # Commit to Git
         os.system("git commit -m 'Track data with dvc'")
@@ -78,11 +72,11 @@ class Pipeline:
 
     def getTrainSet(self):
         scrList = self.config.get("TrainSet", "scr").split(', ')
-        outputs = []
+        self.trainSets = []
         prefix = "train_"
 
         for file in self.trainFileList:
-            outputs.append(prefix + file + ".txt")
+            self.trainSets.append(prefix + file + ".txt")
 
         cmd1 = "dvc run " \
                "-f getTrainSet.dvc "
@@ -91,7 +85,7 @@ class Pipeline:
         for scr in scrList:
             cmd1 += "-d " + scr + " "
             cmd3 += scr + " && "
-        for output in outputs:
+        for output in self.trainSets:
             cmd2 += "-o " + output + " "
         cmd3 = "" if cmd3 == "python " else cmd3[:-3]
         cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
@@ -103,11 +97,11 @@ class Pipeline:
 
     def getTestSet(self):
         scrList = self.config.get("TestSet", "scr").split(', ')
-        outputs = []
+        self.testSets = []
         prefix = "test_"
 
         for file in self.testFileList:
-            outputs.append(prefix + file + ".txt")
+            self.testSets.append(prefix + file + ".txt")
 
         cmd1 = "dvc run " \
                "-f getTestSet.dvc "
@@ -116,7 +110,7 @@ class Pipeline:
         for scr in scrList:
             cmd1 += "-d " + scr + " "
             cmd3 += scr + " && "
-        for output in outputs:
+        for output in self.testSets:
             cmd2 += "-o " + output + " "
         cmd3 = "" if cmd3 == "python " else cmd3[:-3]
         cmd = cmd1 + cmd2 + cmd3 + "./data/test/"
@@ -132,18 +126,22 @@ class Pipeline:
 
     def validate(self):
         # for darknet usecase only
+        if not self.testSets:
+            print("No testData available for validation")
+            exit(0)
+
         cmd = "dvc run -n validation"
-        input = " -d " + self.config.get("Validate", "input")
+
+        for file in self.testSets:
+            input += " -d " + file
         configuration = " -d " + self.config.get("Validate", "configuration")
         weights = " -d " + self.config.get("Validate", "weights")
-        outputs = self.config.get("Validate", "outputs").split(', ')
-        outputsCmd = ""
-        for output in outputs:
-            outputsCmd = " -o " + output
-        cmd += input + configuration + weights + outputsCmd + " -w " + self.config.get("Validate", "directory") + " "
+        outputs = " -O ./results/"
+
+        cmd += input + configuration + weights + outputs + " "
         cmd += self.config.get("Validate", "src") + " detector valid " \
                + self.config.get("Validate", "data") + self.config.get("Validate", "configuration")\
-               + self.config.get("Validate", "weights") + " -dont_show "\
+               + self.config.get("Validate", "weights") + " -dont_show "
 
         # print(cmd)
         '''
@@ -218,6 +216,19 @@ class Pipeline:
         if not os.path.isfile(dir):
             os.system("mkdir " + dir)
 
+    def getFromNAS(self, dir, fileList):
+        try:
+            for file in fileList:
+                name = file.split('/')[-1]
+                cmd = "scp " + self.dataRemote[4:] + "/" + file + " " + dir
+                os.system(cmd)
+                # Track a data file
+                cmd = "dvc add " + dir + name
+                os.system(cmd)
+                os.system("git add " + dir + name + ".dvc")
+        except Exception as e:
+            print(e)
+
 
 if __name__ == "__main__":
     newPip = Pipeline(sys.argv[1])
@@ -231,13 +242,11 @@ if __name__ == "__main__":
         newPip.getData()
     if newPip.config.get("Remote", "needSetRemote") == "true":
         newPip.setRemote()
-    if newPip.config.get("TrainSet", "needPreprocess") == "true":
-        newPip.getTrainSet()
-    if newPip.config.get("TestSet", "needPreprocess") == "true":
-        newPip.getTestSet()
     if newPip.config.get("Train", "needTrain") == "true":
+        newPip.getTrainSet()
         newPip.train()
     if newPip.config.get("Validate", "needValidate") == "true":
+        newPip.getTestSet()
         newPip.validate()
     if newPip.config.get("ResultConvert", "needResultConvert") == "true":
         newPip.resultConvert()

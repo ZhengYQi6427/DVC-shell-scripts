@@ -3,21 +3,20 @@ gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
 needSetRemote=true
-dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic/Data/Videos/Videos.processed
+dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic
 NAS_account=ra_yz3622
 NAS_password=summer
 
 [Data]
 needGetData=true
-trainFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
-testFileList=HIKL2D200326T170529_3_0458_0628_calibrated.mp4
+trainFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
+testFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
+weights=/Models/YOLOV3_Models/traffic_final.weights
 
 [TrainSet]
-needPreprocess=false
 scr=json2voc.py, voc2text.py
 
 [TestSet]
-needPreprocess=true
 scr=generate_testset.py
 
 [Train]
@@ -30,13 +29,10 @@ outputs=/backup/final.weights
 
 [Validate]
 needValidate=false
-directory=~/dvc/dvc-YoloDarknet-example
-input=/test_traffic_video_HIKL1D190911T153514_20190920_0700_0830_90sec_calibration.mp4.txt
-data=/train_data/traffic.data
-configuration=/train_data/traffic.cfg
-weights=/backup/traffic_final.weights
-src=../darknet/darknet
-outputs=/results/comp4_det_test_Vehicle.txt, /results/comp4_det_test_Pedestrian.txt
+data=./config/traffic.data
+configuration=./config/traffic.cfg
+weights=./backup/traffic_final.weights
+src=../../darknet/darknet
 
 [ResultConvert]
 needResultConvert=false
