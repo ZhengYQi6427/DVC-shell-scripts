@@ -96,10 +96,8 @@ class Pipeline:
         # os.system("dvc push -q")
 
         # modify config/traffic.data
-        with open("config/traffic.data", "w") as file:
-            data = file.readlines()
-            data[1] = "train = " + str(trainSets).strip('[]')
-            file.writelines(data)
+        self.overwriteLine("config/traffic.data", 1, 
+            "valid = " + str(self.trainSets).strip('[]'))
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 
@@ -129,10 +127,8 @@ class Pipeline:
         # os.system("dvc push -q")
 
         # modify config/traffic.data
-        with open("config/traffic.data", "w") as file:
-            data = file.readlines()
-            data[2] = "valid = " + str(testSets).strip('[]')
-            file.writelines(data)
+        self.overwriteLine("config/traffic.data", 2, 
+            "valid = " + str(self.testSets).strip('[]'))
         os.system("git add config/traffic.data")
         os.system("git commit -m 'modify traffic.data'")
 
@@ -232,6 +228,16 @@ class Pipeline:
                 cmd = "dvc add " + dir + name
                 os.system(cmd)
                 os.system("git add " + dir + name + ".dvc" + " .gitignore")
+        except Exception as e:
+            print(e)
+
+    def overwriteLine(file, lineNum, text):
+        try:
+            lines = open(file, 'r').readlines()
+            lines[lineNum] = text
+            out = open(file, 'w')
+            out.writelines(lines)
+            out.close()
         except Exception as e:
             print(e)
 
