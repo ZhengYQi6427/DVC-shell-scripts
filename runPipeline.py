@@ -231,7 +231,7 @@ class Pipeline:
         except Exception as e:
             print(e)
 
-    def overwriteLine(file, lineNum, text):
+    def overwriteLine(self, file, lineNum, text):
         try:
             lines = open(file, 'r').readlines()
             lines[lineNum] = text
