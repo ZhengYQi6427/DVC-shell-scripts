@@ -76,7 +76,7 @@ class Pipeline:
         prefix = "train_"
 
         for file in self.trainFileList:
-            self.trainSets.append(prefix + file + ".txt")
+            self.trainSets.append(prefix + file.split('/')[-1] + ".txt")
 
         cmd1 = "dvc run " \
                "-f getTrainSet.dvc "
@@ -101,7 +101,7 @@ class Pipeline:
         prefix = "test_"
 
         for file in self.testFileList:
-            self.testSets.append(prefix + file + ".txt")
+            self.testSets.append(prefix + file.split('/')[-1] + ".txt")
 
         cmd1 = "dvc run " \
                "-f getTestSet.dvc "
