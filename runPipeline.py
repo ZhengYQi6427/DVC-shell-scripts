@@ -235,6 +235,7 @@ if __name__ == "__main__":
     if newPip.config.get("Train", "needTrain") == "true":
         newPip.getTrainSet()
         newPip.train()
+    newPip.getTestSet()
     if newPip.config.get("Validate", "needValidate") == "true":
         newPip.getTestSet()
         newPip.validate()
