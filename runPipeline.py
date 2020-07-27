@@ -57,13 +57,13 @@ class Pipeline:
         self.makedir("backup")
 
         print("##### getting data files for training")
-        getFromNAS("data/train/", self.trainFileList)
+        self.getFromNAS("data/train/", self.trainFileList)
         
         print("##### getting data files for testing")
-        getFromNAS("data/test/", self.testFileList)
+        self.getFromNAS("data/test/", self.testFileList)
 
         print("##### getting .weights")
-        getFromNAS("backup/", self.weights)
+        self.getFromNAS("backup/", self.weights)
 
         # Commit to Git
         os.system("git commit -m 'Track data with dvc'")
