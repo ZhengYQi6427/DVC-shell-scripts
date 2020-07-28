@@ -68,6 +68,11 @@ class Pipeline:
         if self.weights:
             self.getFromNAS("backup/", self.weights)
 
+        print("##### getting other files")
+        others = self.config.get("Data", "weights").split(',')
+        if others:
+            self.getFromNAS("./", others)
+
         # Commit to Git
         os.system("git commit -m 'Track data with dvc'")
 
@@ -153,7 +158,7 @@ class Pipeline:
         weights = " -d " + self.config.get("Validate", "weights")
         outputs = " --outs-persist ./results/"
 
-        cmd += data + configuration + weights + outputs + " -w ./ --force "
+        cmd += data + configuration + weights + outputs + " "
         cmd += self.config.get("Validate", "src") + " detector valid " \
                + self.config.get("Validate", "data") + " " + self.config.get("Validate", "configuration")\
                + " " + self.config.get("Validate", "weights") + " -dont_show "
@@ -166,56 +171,43 @@ class Pipeline:
         # os.system("dvc push -q")
 
     def resultConvert(self):
+        self.resultsPath = self.config.get("ResultConvert", "resultPath")
+        self.result = self.config.get("ResultConvert", "result")
+
         # for darknet usecase only
-        cmd = "dvc run -n result-conversion"
-        inputs = self.config.get("ResultConvert", "inputs").split(', ')
-        for input in inputs:
-            cmd += " -d " + input
-        outputs = self.config.get("ResultConvert", "outputs").split(', ')
-        for output in outputs:
-            cmd += " -o " + output
-        cmd += " -w " + self.config.get("ResultConvert", "directory")
-        scrList = self.config.get("ResultConvert", "src").split(', ')
-        cmd1 = " python "
-        for scr in scrList:
-            cmd1 += scr + " && "
-        cmd += "" if cmd1 == " python " else cmd1[:-3]
+        cmd = "dvc run -n res-convert"
+        cmd += " -d " + self.config.get("Validate", "data") + " -d ./results"
+        cmd += " -o " + os.path.join(self.resultsPath, self.result)
+        scr = self.config.get("ResultConvert", "src")
+        cmd += " python " + scr + " " + self.resultsPath + " " + self.result
 
         # print(cmd)
-        '''
         os.system(cmd)
 
-        os.system("git add result-conversion.dvc")
+        os.system("git add res-convert.dvc")
         os.system("git commit -m 'Create Stage: result conversion'")
-        os.system("dvc push -q")
-        '''
+        # os.system("dvc push -q")
 
     def evaluate(self):
         # for darknet usecase only
         cmd = "dvc run -n evaluation"
-        inputs = self.config.get("Evaluate", "inputs").split(', ')
-        for input in inputs:
-            cmd += " -d " + input
-        cmd += " -M metrics.json"
-        cmd += " -w " + self.config.get("ResultConvert", "directory")
-        scrList = self.config.get("ResultConvert", "src").split(', ')
-        cmd1 = " python "
-        for scr in scrList:
-            cmd1 += scr + " && "
-        cmd += "" if cmd1 == " python " else cmd1[:-3]
+        cmd += " -d " + os.path.join(self.resultsPath, self.result)
+        cmd += " -m metrics.json"
+        cmd += " python " + self.config.get("Evaluate", "src") + " " \
+               + self.config.get("Evaluate", "groundTruth") + " " + \
+               os.path.join(self.resultsPath, self.result)
 
         # print(cmd)
-
-        '''
         os.system(cmd)
 
         os.system("git add evaluation.dvc")
         os.system("git commit -m 'Create Stage: evaluation'")
-        os.system("dvc push -q")
-        '''
-        cmd = "git tag -a '" + self.experimentName + "' -m '" + self.experimentName + " evaluation'"
-        # print(cmd)
-        # os.system(cmd)
+        # .system("dvc push -q")
+
+    def end(self):
+        os.system("git add pipelines.yaml")
+        os.system("git commit -m 'pipeline .yaml file added'")
+        os.system("git push")
 
     def makedir(self, dir):
         if not os.path.isfile(dir):
@@ -260,14 +252,15 @@ if __name__ == "__main__":
     if newPip.config.get("Train", "needTrain") == "true":
         newPip.getTrainSet()
         newPip.train()
-    newPip.getTestSet()
     if newPip.config.get("Validate", "needValidate") == "true":
-        # newPip.getTestSet()
+        newPip.getTestSet()
         newPip.validate()
-    if newPip.config.get("ResultConvert", "needResultConvert") == "true":
         newPip.resultConvert()
     if newPip.config.get("Evaluate", "needEvaluate") == "true":
         newPip.evaluate()
+
+    # newPip.end()
+
 
     print("=========================Finish building " + newPip.pipeName + "=========================")
     os.chdir("../../DVC-shell-scripts")
