@@ -131,6 +131,8 @@ class Pipeline:
         cmd = cmd1 + cmd2 + cmd3 + "./data/test/"
         os.system(cmd)
 
+        os.system("sed -i '20,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
+
         os.system("git add getTestSet.dvc .gitignore")
         os.system("git commit -m 'Create Stage: generate testset'")
         # os.system("dvc push -q")
