@@ -22,8 +22,9 @@ class Pipeline:
         self.makedir("../" + self.pipeName + "/" + self.repoName)
         
         try:
-            os.system("git clone " + self.gitHubRepo + 
+            os.system("git clone " + self.gitHubRepo  + " orgin master" + 
                 " ../" + self.pipeName + "/" + self.repoName)
+            os.system("git checkout -b buildPipeline")
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
@@ -206,8 +207,9 @@ class Pipeline:
 
     def end(self):
         os.system("git add pipelines.yaml")
+        os.system("git add pipelines.lock")
         os.system("git commit -m 'pipeline .yaml file added'")
-        os.system("git push")
+        os.system("git push origin buildPipeline")
 
     def makedir(self, dir):
         if not os.path.isfile(dir):
