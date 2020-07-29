@@ -22,8 +22,7 @@ class Pipeline:
         self.makedir("../" + self.pipeName + "/" + self.repoName)
         
         try:
-            os.system("git clone " + self.gitHubRepo  + " orgin master" + 
-                " ../" + self.pipeName + "/" + self.repoName)
+            os.system("git clone " + self.gitHubRepo + " ../" + self.pipeName + "/" + self.repoName)
             os.system("git checkout -b buildPipeline")
         except Exception as e:
             print(e)
