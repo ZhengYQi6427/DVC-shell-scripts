@@ -1,4 +1,4 @@
-# DVC Tutorial (YOLOvs usecase)
+# DVC Tutorial (YOLOv3 usecase)
 
 DVC is a version control system built to make models shareable and reproducible. This tutortial will walk you through how to set up your first pipeline with DVC using this Github repository.
 
