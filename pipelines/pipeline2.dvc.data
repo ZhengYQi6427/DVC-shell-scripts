@@ -2,13 +2,13 @@
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 
 [Remote]
-needSetRemote=false
+needSetRemote=true
 dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic
 NAS_account=ra_yz3622
 NAS_password=summer
 
 [Data]
-needGetData=false
+needGetData=true
 trainFileList=
 testFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 weights=/Models/YOLOV3_Models/traffic_final.weights
@@ -29,7 +29,7 @@ scr=../darknet/darknet
 outputs=/backup/final.weights
 
 [Validate]
-needValidate=false
+needValidate=true
 data=./config/traffic.data
 configuration=./config/traffic.cfg
 weights=./backup/traffic_final.weights
@@ -41,6 +41,6 @@ resultPath=./result_in_json/
 result=res_for_eval.json
 
 [Evaluate]
-needEvaluate=false
+needEvaluate=true
 groundTruth=./traffic_video_GP010589_190720_0310_0440_90sec_calibrated_stable.json
 src=evaluation.py
