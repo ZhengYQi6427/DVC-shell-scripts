@@ -100,7 +100,7 @@ class Pipeline:
         cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
         os.system(cmd)
 
-        os.system("git add getTrainSet.dvc .gitignore")
+        os.system("git add trainSet.dvc .gitignore")
         os.system("git commit -m 'Create Stage: generate trainset'")
         # os.system("dvc push -q")
 
@@ -133,7 +133,7 @@ class Pipeline:
 
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
-        os.system("git add getTestSet.dvc .gitignore")
+        os.system("git add testSet.dvc .gitignore")
         os.system("git commit -m 'Create Stage: generate testset'")
         # os.system("dvc push -q")
 
