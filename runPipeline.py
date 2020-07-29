@@ -92,7 +92,8 @@ class Pipeline:
         cmd3 = "python "
         for file in self.trainFileList:
             cmd1 += "-d " + "./data/train/" + file.split('/')[-1] + " "
-        for scr in scrList:   
+        for scr in scrList:
+            cmd1 += "-d " + src + " "
             cmd3 += scr + " && "
         for output in self.trainSets:
             cmd2 += "-o " + output + " "
@@ -100,7 +101,7 @@ class Pipeline:
         cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
         os.system(cmd)
 
-        os.system("git add trainSet.dvc .gitignore")
+        os.system("git add .gitignore pipelines.yaml pipelines.lock")
         os.system("git commit -m 'Create Stage: generate trainset'")
         # os.system("dvc push -q")
 
@@ -123,7 +124,8 @@ class Pipeline:
         cmd3 = "python "
         for file in self.testFileList:
             cmd1 += "-d " + "./data/test/" + file.split('/')[-1] + " "
-        for scr in scrList:   
+        for scr in scrList:  
+            cmd1 += "-d " + src + " " 
             cmd3 += scr + " && "
         for output in self.testSets:
             cmd2 += "-o " + output + " "
@@ -133,7 +135,7 @@ class Pipeline:
 
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
-        os.system("git add testSet.dvc .gitignore")
+        os.system("git add .gitignore pipelines.yaml pipelines.lock")
         os.system("git commit -m 'Create Stage: generate testset'")
         # os.system("dvc push -q")
 
@@ -169,7 +171,7 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add validation.dvc")
+        os.system("git add .gitignore pipelines.yaml pipelines.lock")
         os.system("git commit -m 'Create Stage: validation'")
         # os.system("dvc push -q")
 
@@ -179,16 +181,17 @@ class Pipeline:
         self.makedir(self.resultsPath)
 
         # for darknet usecase only
+        scr = self.config.get("ResultConvert", "src")
         cmd = "dvc run -n res-convert"
         cmd += " -d " + self.config.get("Validate", "data") + " -d ./results"
+        cmd += " -d " + src
         cmd += " -o " + os.path.join(self.resultsPath, self.result)
-        scr = self.config.get("ResultConvert", "src")
         cmd += " python " + scr + " " + self.resultsPath + " " + self.result
 
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add res-convert.dvc")
+        os.system("git add .gitignore pipelines.yaml pipelines.lock")
         os.system("git commit -m 'Create Stage: result conversion'")
         # os.system("dvc push -q")
 
@@ -196,6 +199,7 @@ class Pipeline:
         # for darknet usecase only
         cmd = "dvc run -n evaluation"
         cmd += " -d " + os.path.join(self.resultsPath, self.result)
+        cmd += " -d " + self.config.get("Evaluate", "src")
         cmd += " -m metrics.json"
         cmd += " python " + self.config.get("Evaluate", "src") + " " \
                + self.config.get("Evaluate", "groundTruth") + " " + \
@@ -204,14 +208,12 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add evaluation.dvc")
+        os.system("git add .gitignore pipelines.yaml pipelines.lock metrics.json")
         os.system("git commit -m 'Create Stage: evaluation'")
         # .system("dvc push -q")
 
     def end(self):
-        os.system("git add pipelines.yaml")
-        os.system("git add pipelines.lock")
-        os.system("git commit -m 'pipeline .yaml file added'")
+        os.system("git tag -a 'baseline-experiment'")
         os.system("git push origin buildPipeline")
 
     def makedir(self, dir):
