@@ -23,11 +23,11 @@ class Pipeline:
         
         try:
             os.system("git clone " + self.gitHubRepo + " ../" + self.pipeName + "/" + self.repoName)
-            os.system("git checkout -b buildPipeline")
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
-        os.chdir("../" + self.pipeName + "/" + self.repoName)       
+        os.chdir("../" + self.pipeName + "/" + self.repoName)  
+        os.system("git checkout -b buildPipeline")     
 
     def initDVC(self):
         try:
@@ -214,7 +214,7 @@ class Pipeline:
 
     def end(self):
         os.system("git tag -a 'baseline-experiment'")
-        os.system("git push origin buildPipeline")
+        # os.system("git push origin buildPipeline")
 
     def makedir(self, dir):
         if not os.path.isfile(dir):
@@ -266,7 +266,7 @@ if __name__ == "__main__":
     if newPip.config.get("Evaluate", "needEvaluate") == "true":
         newPip.evaluate()
 
-    # newPip.end()
+    newPip.end()
 
 
     print("=========================Finish building " + newPip.pipeName + "=========================")
