@@ -29,7 +29,7 @@ scr=../darknet/darknet
 outputs=/backup/final.weights
 
 [Validate]
-needValidate=false
+needValidate=true
 data=./config/traffic.data
 configuration=./config/traffic.cfg
 weights=./backup/traffic_final.weights
@@ -41,6 +41,6 @@ resultPath=./result_in_json/
 result=res_for_eval.json
 
 [Evaluate]
-needEvaluate=false
+needEvaluate=true
 groundTruth=./traffic_video_GP010589_190720_0310_0440_90sec_calibrated_stable.json
 src=evaluation.py
