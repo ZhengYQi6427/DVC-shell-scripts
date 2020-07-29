@@ -79,7 +79,7 @@ class Pipeline:
         # os.system("dvc push -q")
 
     def getTrainSet(self):
-        srcList = self.config.get("TrainSet", "scr").split(', ')
+        srcList = self.config.get("TrainSet", "src").split(', ')
         self.trainSets = []
         prefix = "train_"
 
@@ -112,7 +112,7 @@ class Pipeline:
         os.system("git commit -m 'modify traffic.data'")
 
     def getTestSet(self):
-        srcList = self.config.get("TestSet", "scr").split(', ')
+        srcList = self.config.get("TestSet", "src").split(', ')
         self.testSets = []
         prefix = "test_"
 
@@ -147,7 +147,7 @@ class Pipeline:
 
     def train(self):
         # for darknet usecase only
-        scr = self.config.get("Train", "scr")
+        src = self.config.get("Train", "src")
 
     def validate(self):
         # for darknet usecase only
@@ -186,7 +186,7 @@ class Pipeline:
         cmd += " -d " + self.config.get("Validate", "data") + " -d ./results"
         cmd += " -d " + src
         cmd += " -o " + os.path.join(self.resultsPath, self.result)
-        cmd += " python " + scr + " " + self.resultsPath + " " + self.result
+        cmd += " python " + src + " " + self.resultsPath + " " + self.result
 
         # print(cmd)
         os.system(cmd)
