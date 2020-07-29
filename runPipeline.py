@@ -79,7 +79,7 @@ class Pipeline:
         # os.system("dvc push -q")
 
     def getTrainSet(self):
-        scrList = self.config.get("TrainSet", "scr").split(', ')
+        srcList = self.config.get("TrainSet", "scr").split(', ')
         self.trainSets = []
         prefix = "train_"
 
@@ -92,7 +92,7 @@ class Pipeline:
         cmd3 = "python "
         for file in self.trainFileList:
             cmd1 += "-d " + "./data/train/" + file.split('/')[-1] + " "
-        for src in scrList:
+        for src in srcList:
             cmd1 += "-d " + src + " "
             cmd3 += src + " && "
         for output in self.trainSets:
@@ -112,7 +112,7 @@ class Pipeline:
         os.system("git commit -m 'modify traffic.data'")
 
     def getTestSet(self):
-        scrList = self.config.get("TestSet", "scr").split(', ')
+        srcList = self.config.get("TestSet", "scr").split(', ')
         self.testSets = []
         prefix = "test_"
 
@@ -124,7 +124,7 @@ class Pipeline:
         cmd3 = "python "
         for file in self.testFileList:
             cmd1 += "-d " + "./data/test/" + file.split('/')[-1] + " "
-        for src in scrList:  
+        for src in srcList:  
             cmd1 += "-d " + src + " " 
             cmd3 += src + " && "
         for output in self.testSets:
@@ -181,7 +181,7 @@ class Pipeline:
         self.makedir(self.resultsPath)
 
         # for darknet usecase only
-        scr = self.config.get("ResultConvert", "src")
+        src = self.config.get("ResultConvert", "src")
         cmd = "dvc run -n res-convert"
         cmd += " -d " + self.config.get("Validate", "data") + " -d ./results"
         cmd += " -d " + src
