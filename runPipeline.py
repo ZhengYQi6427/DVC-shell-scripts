@@ -92,9 +92,9 @@ class Pipeline:
         cmd3 = "python "
         for file in self.trainFileList:
             cmd1 += "-d " + "./data/train/" + file.split('/')[-1] + " "
-        for scr in scrList:
+        for src in scrList:
             cmd1 += "-d " + src + " "
-            cmd3 += scr + " && "
+            cmd3 += src + " && "
         for output in self.trainSets:
             cmd2 += "-o " + output + " "
         cmd3 = "" if cmd3 == "python " else cmd3[:-3]
@@ -124,9 +124,9 @@ class Pipeline:
         cmd3 = "python "
         for file in self.testFileList:
             cmd1 += "-d " + "./data/test/" + file.split('/')[-1] + " "
-        for scr in scrList:  
+        for src in scrList:  
             cmd1 += "-d " + src + " " 
-            cmd3 += scr + " && "
+            cmd3 += src + " && "
         for output in self.testSets:
             cmd2 += "-o " + output + " "
         cmd3 = "" if cmd3 == "python " else cmd3[:-3]
