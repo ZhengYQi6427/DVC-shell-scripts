@@ -175,7 +175,7 @@ class Pipeline:
     def resultConvert(self):
         self.resultsPath = self.config.get("ResultConvert", "resultPath")
         self.result = self.config.get("ResultConvert", "result")
-        self.makedir(resultsPath)
+        self.makedir(self.resultsPath)
 
         # for darknet usecase only
         cmd = "dvc run -n res-convert"
