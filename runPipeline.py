@@ -87,11 +87,12 @@ class Pipeline:
             self.trainSets.append(prefix + file.split('/')[-1] + ".txt")
 
         cmd1 = "dvc run " \
-               "-f getTrainSet.dvc "
+               "-n TrainSet "
         cmd2 = ""
         cmd3 = "python "
-        for scr in scrList:
-            cmd1 += "-d " + scr + " "
+        for file in self.trainFileList:
+            cmd1 += "-d " + "./data/train/" + file.split('/')[-1] + " "
+        for scr in scrList:   
             cmd3 += scr + " && "
         for output in self.trainSets:
             cmd2 += "-o " + output + " "
@@ -117,12 +118,12 @@ class Pipeline:
         for file in self.testFileList:
             self.testSets.append(prefix + file.split('/')[-1] + ".txt")
 
-        cmd1 = "dvc run " \
-               "-f getTestSet.dvc "
+        cmd1 = "dvc run -n testSet "
         cmd2 = ""
         cmd3 = "python "
-        for scr in scrList:
-            cmd1 += "-d " + scr + " "
+        for file in self.testFileList:
+            cmd1 += "-d " + "./data/test/" + file.split('/')[-1] + " "
+        for scr in scrList:   
             cmd3 += scr + " && "
         for output in self.testSets:
             cmd2 += "-o " + output + " "
