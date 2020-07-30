@@ -17,7 +17,7 @@ $ git clone https://github.com/<your_Github_account>/DVC-shell-scripts.git
 
 The repository you get have a layout like this, 
 
-It helps you to build a complete pipeline using DVC. But first you need to specify your confifguration in the pipelines folder. Here we provide a example dvc config file ([pipelines/pipeline1.dvc,data][PlDb])
+It helps you to build a complete pipeline using DVC. But first you need to specify your confifguration in the pipelines folder. Here we provide a example dvc config file ([pipelines/pipeline1.dvc.data][PlDb])
 
 ### Usage
 
