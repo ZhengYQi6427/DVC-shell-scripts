@@ -6,7 +6,7 @@ DVC is a version control system built to make models shareable and reproducible.
 
 ### Installation
 
-We recommend you to fork this repository ([DVC-shell=scripts][PlDb]) to your own Github first. 
+We recommend you to fork this repository ([DVC-shell-scripts][PlDb]) to your own Github first. 
 
 Open your local working direcory and clone the repository.
 
