@@ -33,7 +33,7 @@ class Pipeline:
     def initDVC(self):
         try:
             os.system("dvc init -f")
-            os.system("git add .dvc ")
+            os.system("git add .dvc")
             os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
             print(e)
@@ -214,6 +214,7 @@ class Pipeline:
         # .system("dvc push -q")
 
     def end(self):
+        print("Finish building pipelines")
         os.system("git add .gitignore dvc.yaml dvc.lock")
         os.system("git tag -a '" + self.branch + "' -m '"+ self.branch + "'")
         os.system("git push origin " + self.branch)
