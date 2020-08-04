@@ -102,7 +102,7 @@ class Pipeline:
         cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
         os.system(cmd)
 
-        os.system("git add .gitignore pipelines.yaml pipelines.lock")
+        os.system("git add .gitignore dvc.yaml dvc.lock")
         os.system("git commit -m 'Create Stage: generate trainset'")
         # os.system("dvc push -q")
 
@@ -136,7 +136,7 @@ class Pipeline:
 
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
-        os.system("git add .gitignore pipelines.yaml pipelines.lock")
+        os.system("git add .gitignore dvc.yaml dvc.lock")
         os.system("git commit -m 'Create Stage: generate testset'")
         # os.system("dvc push -q")
 
@@ -172,7 +172,7 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore pipelines.yaml pipelines.lock")
+        os.system("git add .gitignore dvc.yaml dvc.lock")
         os.system("git commit -m 'Create Stage: validation'")
         # os.system("dvc push -q")
 
@@ -192,7 +192,7 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore pipelines.yaml pipelines.lock")
+        os.system("git add .gitignore dvc.yaml dvc.lock")
         os.system("git commit -m 'Create Stage: result conversion'")
         # os.system("dvc push -q")
 
@@ -209,14 +209,15 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore pipelines.yaml pipelines.lock metrics.json")
+        os.system("git add .gitignore dvc.yaml dvc.lock metrics.json")
         os.system("git commit -m 'Create Stage: evaluation'")
         # .system("dvc push -q")
 
     def end(self):
         print("Finish building pipelines")
-        os.system("git add .gitignore dvc.yaml dvc.lock")
-        os.system("git tag -a '" + self.branch + "' -m '"+ self.branch + "'")
+        # os.system("git add .gitignore dvc.yaml dvc.lock")
+        os.system("git commit -m 'Finish building pipelines'")
+        # os.system("git tag -a 'new branch " + self.branch + "' -m '"+ self.branch + " new branch'")
         os.system("git push origin " + self.branch)
 
     def makedir(self, dir):
