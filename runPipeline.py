@@ -16,6 +16,7 @@ class Pipeline:
         self.trainFileList = self.config.get("Data", "trainFileList").split(', ')
         self.testFileList = self.config.get("Data", "testFileList").split(', ')
         self.weights = self.config.get("Data", "weights").split(', ')
+        self.branch = self.config.get("Basics", "branch")
         
         self.pipeName = filename.split("/")[-1][:-9]
         self.makedir("../" + self.pipeName)
@@ -27,7 +28,7 @@ class Pipeline:
             print(e)
         # all following steps would be done inside this local repo
         os.chdir("../" + self.pipeName + "/" + self.repoName)  
-        os.system("git checkout -b buildPipeline")     
+        os.system("git checkout -b " + self.branch)     
 
     def initDVC(self):
         try:
@@ -213,8 +214,9 @@ class Pipeline:
         # .system("dvc push -q")
 
     def end(self):
-        os.system("git tag -a 'baseline-experiment'")
-        # os.system("git push origin buildPipeline")
+        os.system("git add .gitignore dvc.yaml dvc.lock")
+        os.system("git tag -a '" + self.branch + "' -m '"+ self.branch + "'")
+        os.system("git push origin " + self.branch)
 
     def makedir(self, dir):
         if not os.path.isfile(dir):
