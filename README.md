@@ -1,14 +1,14 @@
 # DVC Tutorial (YOLOv3 usecase)
 
-DVC is a version control system built to make models shareable and reproducible. This tutortial will walk you through how to set up your first pipeline with DVC using this Github repository.
+DVC is a version control system built to make models shareable and reproducible. This tutorial will walk you through how to set up your first pipeline with DVC using this Github repository.
 
-# Eample to get started
+# Example to get started
 
 ### Installation
 
 We recommend you to fork this repository ([DVC-shell-scripts][PlDb]) to your own Github first. 
 
-Open your local working direcory and clone the repository.
+Open your local working directory and clone the repository.
 
 ```sh
 $ cd <directory>
