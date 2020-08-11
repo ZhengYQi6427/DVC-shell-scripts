@@ -4,7 +4,6 @@ import subprocess
 import glob
 import configparser
 
-
 class Pipeline:
     def __init__(self, filename):
         self.config = configparser.ConfigParser()
@@ -33,7 +32,7 @@ class Pipeline:
     def initDVC(self):
         try:
             os.system("dvc init -f")
-            os.system("git add .dvc")
+            os.system("git add .")
             os.system("git commit -m 'Initialize DVC project'")
         except Exception as e:
             print(e)
@@ -44,13 +43,13 @@ class Pipeline:
         os.system(cmd)
         cmd = "dvc remote add -f gitHubRepo " + self.gitHubRepo
         os.system(cmd)
-        os.system("git add . ")
+        os.system("git add .")
         os.system("git commit .dvc/config -m 'Set dvc remote'")
-        # os.system("dvc push -r gitHubRepo")
 
     def getData(self):
         # get data from Synology NAS
         self.dataRemote = self.config.get("Remote", "dataRemote")
+        self.password = self.config.get("Remote", "NAS_password")
         os.system("pwd")
         self.makedir("data")
         self.makedir("data/train")
@@ -75,9 +74,8 @@ class Pipeline:
             self.getFromNAS("./", others)
 
         # Commit to Git
+        os.system("git add .")
         os.system("git commit -m 'Track data with dvc'")
-
-        # os.system("dvc push -q")
 
     def getTrainSet(self):
         srcList = self.config.get("TrainSet", "src").split(', ')
@@ -102,15 +100,15 @@ class Pipeline:
         cmd = cmd1 + cmd2 + cmd3 + "./data/train/"
         os.system(cmd)
 
-        os.system("git add .gitignore dvc.yaml dvc.lock")
-        os.system("git commit -m 'Create Stage: generate trainset'")
-        # os.system("dvc push -q")
+        for file in self.trainFileList:
+            os.system("git add .gitignore ./data/train/frame_dir_" + file.split('/')[-1])
 
         # modify config/traffic.data
-        self.overwriteLine("config/traffic.data", 1, 
-            "valid = " + ', '.join(self.trainSets) + "\n")
-        os.system("git add config/traffic.data")
-        os.system("git commit -m 'modify traffic.data'")
+        self.overwriteLine("config/traffic.data", 2,
+                           "train = " + ', '.join(self.trainSets) + "\n")
+
+        os.system("git add .")
+        os.system("git commit -m 'Create Stage: generate trainset'")
 
     def getTestSet(self):
         srcList = self.config.get("TestSet", "src").split(', ')
@@ -136,15 +134,15 @@ class Pipeline:
 
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
-        os.system("git add .gitignore dvc.yaml dvc.lock")
-        os.system("git commit -m 'Create Stage: generate testset'")
-        # os.system("dvc push -q")
+        for file in self.testFileList:
+            os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1])
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
             "valid = " + ', '.join(self.testSets) + "\n")
-        os.system("git add config/traffic.data")
-        os.system("git commit -m 'modify traffic.data'")
+
+        os.system("git add .")
+        os.system("git commit -m 'Create Stage: generate testset'")
 
     def train(self):
         # for darknet usecase only
@@ -172,9 +170,9 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore dvc.yaml dvc.lock")
+        os.system("git add .gitignore ./results/")
+        os.system("git add .")
         os.system("git commit -m 'Create Stage: validation'")
-        # os.system("dvc push -q")
 
     def resultConvert(self):
         self.resultsPath = self.config.get("ResultConvert", "resultPath")
@@ -192,9 +190,9 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore dvc.yaml dvc.lock")
+        os.system("git add .gitignore " + os.path.join(self.resultsPath, self.result))
+        os.system("git add .")
         os.system("git commit -m 'Create Stage: result conversion'")
-        # os.system("dvc push -q")
 
     def evaluate(self):
         # for darknet usecase only
@@ -209,13 +207,12 @@ class Pipeline:
         # print(cmd)
         os.system(cmd)
 
-        os.system("git add .gitignore dvc.yaml dvc.lock metrics.json")
+        os.system("git add .")
         os.system("git commit -m 'Create Stage: evaluation'")
-        # .system("dvc push -q")
 
     def end(self):
         print("Finish building pipelines")
-        # os.system("git add .gitignore dvc.yaml dvc.lock")
+        os.system("cat metrics.json >> report.md")
         os.system("git commit -m 'Finish building pipelines'")
         # os.system("git tag -a 'new branch " + self.branch + "' -m '"+ self.branch + " new branch'")
         os.system("git push origin " + self.branch)
@@ -225,15 +222,17 @@ class Pipeline:
             os.system("mkdir " + dir)
 
     def getFromNAS(self, dir, fileList):
+        if not fileList:
+            return
         try:
             for file in fileList:
                 name = file.split('/')[-1]
-                cmd = "scp " + self.dataRemote[4:] + "/" + file + " " + dir
+                cmd = "sshpass -p '" + self.password + "' scp -r " + self.dataRemote[4:] + "/" + file + " " + dir
                 os.system(cmd)
                 # Track a data file
                 cmd = "dvc add " + dir + name
                 os.system(cmd)
-                os.system("git add " + dir + name + ".dvc" + " .gitignore")
+                os.system("git add .gitignore " + dir + name)
         except Exception as e:
             print(e)
 
