@@ -6,68 +6,27 @@ if [ -f $cfg ]; then
 	source $cfg
 fi
 
-repo=$(echo "$github_repo" | cut -d'/' -f 5)
-repo_name=${repo:0:${#repo}-4}
-
 ##### FUNCTIONS
 init()
-{ 
-    cd $repo_name	
-
-    echo -n "Do you need to install or update DVC? [y/n]"
+{
+    echo "========================Initialization Start==========================="
+    git config --global user.name "$git_user_name"
+    git config --global user.email "$git_user_email"
+    echo -n "Update DVC? [y/n]"
     read
-    if [ "$REPLY" = "y" ]; then 
-        sudo apt update
-        sudo apt install dvc
-        sudo apt install tree
+    if [ "$REPLY" = "y" ]; then
+      sudo apt-get update dvc
+      sudo apt install dvc
     fi
-    
-    # Initialize DVC
-    if [ ! -e ".dvc" ]; then
-	    dvc init
-    fi
-    # commit to git
-    git add .
-    git commit -m "Initialize DVC project"
-    cd ..
+    pip install requirements.txt
     echo "========================Initialization Finished========================"
 }
 
-getCode()
-{
-    if [ -f "$repo_name" ]; then
-	    rm -rf $repo_name
-    fi
-    git clone "$github_repo"
-    rm -rf .git
-
-    git add $(pwd)/$repo_name
-    git commit -m 'add code'
-
-    echo "==============================Code Added==============================="
-}
-
-
 ##### MAIN
-# getCode
+init
 
-if [ "$needInitialize" = "true" ]; then
-	init
-fi
-
-i=1
-until [ $i -gt $pipelinesNum ];
+for entry in pipelines/*
 do
-	python runPipeline.py ${pipeline[$i]}
-	# runPipeline ${pipeline[$i]}
-    # echo "${pipeline[$i]}"
-	i=$((i + 1))
-    echo " "
-    echo " "
+  # echo "$entry"
+  python runPipeline.py $entry
 done
-
-echo -n "Show metrics? [y/n]"
-read
-if [ "$REPLY" = "y" ]; then 
-    dvc metrics show
-fi
