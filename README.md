@@ -35,8 +35,10 @@ The DVC config file strictly follows the steps we build a ML/DL model. It consis
   - ResultConvert
   - Evaluation
 
+For detailed tutorials, please refer to [DVC tutorial - YOLO usecase][PlDb].
 
 
 
 [PlDb]: <https://github.com/ZhengYQi6427/DVC-shell-scripts.git>
 [PlDb]: <https://github.com/ZhengYQi6427/DVC-shell-scripts/blob/master/pipelines/pipeline1.dvc.data>
+[PlDb]: <https://docs.google.com/document/d/1jGCSVIhT5bfg1ace74jKn1zUTi6E9tH0z47PfmZkhfk/edit?usp=sharing>
