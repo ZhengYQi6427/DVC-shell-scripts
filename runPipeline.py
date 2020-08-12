@@ -30,8 +30,10 @@ class Pipeline:
         # open a new branch for the experiment
         try:
             os.system("git checkout -b " + self.branch)
+            os.system("git add .gitignore *.mp4 *.jpg")
         except Exception as e:
             print(e)
+
 
     def initDVC(self):
         try:
@@ -251,30 +253,33 @@ class Pipeline:
 
 
 if __name__ == "__main__":
-    newPip = Pipeline(sys.argv[1])
-    print("=======================Start building " + newPip.pipeName + "===========================")
+    try:
+        newPip = Pipeline(sys.argv[1])
+        print("=======================Start building " + newPip.pipeName + "===========================")
 
-    print("Pipeline running ......")
+        print("Pipeline running ......")
 
-    newPip.initDVC();
+        newPip.initDVC();
 
-    if newPip.config.get("Data", "needGetData") == "true":
-        newPip.getData()
-    if newPip.config.get("Remote", "needSetRemote") == "true":
-        newPip.setRemote()
-    if newPip.config.get("Train", "needTrain") == "true":
-        newPip.getTrainSet()
-        newPip.train()
-    if newPip.config.get("Validate", "needValidate") == "true":
-        newPip.getTestSet()
-        newPip.validate()
-        newPip.resultConvert()
-    if newPip.config.get("Evaluate", "needEvaluate") == "true":
-        newPip.evaluate()
+        if newPip.config.get("Data", "needGetData") == "true":
+            newPip.getData()
+        if newPip.config.get("Remote", "needSetRemote") == "true":
+            newPip.setRemote()
+        if newPip.config.get("Train", "needTrain") == "true":
+            newPip.getTrainSet()
+            newPip.train()
+        if newPip.config.get("Validate", "needValidate") == "true":
+            newPip.getTestSet()
+            newPip.validate()
+            newPip.resultConvert()
+        if newPip.config.get("Evaluate", "needEvaluate") == "true":
+            newPip.evaluate()
 
-    newPip.end()
+        newPip.end()
 
+        print("=========================Finish building " + newPip.pipeName + "=========================")
+        os.chdir("../../DVC-shell-scripts")
 
-    print("=========================Finish building " + newPip.pipeName + "=========================")
-    os.chdir("../../DVC-shell-scripts")
+    except KeyboardInterrupt:
+        print("Keyboard interrupt exception caught")
 
