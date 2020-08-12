@@ -105,7 +105,7 @@ class Pipeline:
         os.system(cmd)
 
         for file in self.trainFileList:
-            os.system("git add .gitignore ./data/train/frame_dir_" + file.split('/')[-1])
+            os.system("git add .gitignore ./data/train/frame_dir_" + file.split('/')[-1] + '/')
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2,
@@ -139,6 +139,7 @@ class Pipeline:
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
         for file in self.testFileList:
+            # print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1])
             os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1])
 
         # modify config/traffic.data
@@ -217,6 +218,7 @@ class Pipeline:
     def end(self):
         print("Finish building pipelines")
         os.system("cat metrics.json >> report.md")
+        os.system("git add .")
         os.system("git commit -m 'Finish building pipelines'")
         # os.system("git tag -a 'new branch " + self.branch + "' -m '"+ self.branch + " new branch'")
         os.system("git push origin " + self.branch)

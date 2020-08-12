@@ -23,7 +23,7 @@ init()
 }
 
 ##### MAIN
-#init
+init
 
 for entry in pipelines/*
 do
