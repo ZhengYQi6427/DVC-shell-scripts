@@ -217,6 +217,7 @@ class Pipeline:
     def end(self):
         print("Finish building pipelines")
         os.system("cat metrics.json >> report.md")
+        os.system("git add .")
         os.system("git commit -m 'Finish building pipelines'")
         # os.system("git tag -a 'new branch " + self.branch + "' -m '"+ self.branch + " new branch'")
         os.system("git push origin " + self.branch)
