@@ -141,7 +141,7 @@ class Pipeline:
 
         for file in self.testFileList:
             print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/")
-            os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/")
+        os.system("git add .gitignore *.jpg")
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
