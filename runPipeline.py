@@ -16,21 +16,21 @@ class Pipeline:
         self.testFileList = self.config.get("Data", "testFileList").split(', ')
         self.weights = self.config.get("Data", "weights").split(', ')
         self.branch = self.config.get("Basics", "branch")
-        
-        self.pipeName = filename.split("/")[-1][:-9]
-        self.makedir("../" + self.pipeName)
-        self.makedir("../" + self.pipeName + "/" + self.repoName)
-        
-        try:
-            os.system("git clone " + self.gitHubRepo + " ../" + self.pipeName + "/" + self.repoName)
-        except Exception as e:
-            print(e)
+
+        if self.config.get("Basics", "needInit") == "true":
+            try:
+                self.pipeName = filename.split("/")[-1][:-9]
+                self.makedir("../" + self.pipeName)
+                self.makedir("../" + self.pipeName + "/" + self.repoName)
+                os.system("git clone " + self.gitHubRepo + " ../" + self.pipeName + "/" + self.repoName)
+            except Exception as e:
+                print(e)
+
         # all following steps would be done inside this local repo
         os.chdir("../" + self.pipeName + "/" + self.repoName)
         # open a new branch for the experiment
         try:
             os.system("git checkout -b " + self.branch)
-            os.system("git add .gitignore *.mp4 *.jpg")
         except Exception as e:
             print(e)
 

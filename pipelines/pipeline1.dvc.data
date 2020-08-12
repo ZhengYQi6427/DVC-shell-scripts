@@ -1,4 +1,5 @@
 [Basics]
+needInit=true
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
 branch=b1
 
