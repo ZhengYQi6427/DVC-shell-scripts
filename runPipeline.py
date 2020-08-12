@@ -226,10 +226,8 @@ class Pipeline:
             os.system("mkdir " + dir)
 
     def getFromNAS(self, dir, fileList):
-        if not fileList:
-            return
-        try:
-            for file in fileList:
+        for file in fileList:
+            if file:
                 name = file.split('/')[-1]
                 cmd = "sshpass -p '" + self.password + "' scp -r " + self.dataRemote[4:] + "/" + file + " " + dir
                 os.system(cmd)
@@ -237,8 +235,6 @@ class Pipeline:
                 cmd = "dvc add " + dir + name
                 os.system(cmd)
                 os.system("git add .gitignore " + dir + name)
-        except Exception as e:
-            print(e)
 
     def overwriteLine(self, file, lineNum, text):
         try:

@@ -10,7 +10,7 @@ NAS_password=summer
 
 [Data]
 needGetData=true
-trainFileList=
+trainFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 testFileList=/Data/Videos/Videos.processed/HIKL2D200326T170529_3_0458_0628_calibrated.mp4
 weights=/Models/YOLOV3_Models/traffic_final.weights
 others=/Data/Videos/Videos.processed/traffic_video_GP010589_190720_0310_0440_90sec_calibrated_stable.json
