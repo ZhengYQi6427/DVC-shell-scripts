@@ -26,8 +26,12 @@ class Pipeline:
         except Exception as e:
             print(e)
         # all following steps would be done inside this local repo
-        os.chdir("../" + self.pipeName + "/" + self.repoName)  
-        os.system("git checkout -b " + self.branch)     
+        os.chdir("../" + self.pipeName + "/" + self.repoName)
+        # open a new branch for the experiment
+        try:
+            os.system("git checkout -b " + self.branch)
+        except Exception as e:
+            print(e)
 
     def initDVC(self):
         try:

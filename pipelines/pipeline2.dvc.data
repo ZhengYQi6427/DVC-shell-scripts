@@ -1,6 +1,6 @@
 [Basics]
 gitHubRepo=https://github.com/ZhengYQi6427/dvc.example.git
-branch=b1
+branch=b2
 
 [Remote]
 needSetRemote=true
