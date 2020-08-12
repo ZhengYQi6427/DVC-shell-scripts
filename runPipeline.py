@@ -143,7 +143,8 @@ class Pipeline:
 
         for file in self.testFileList:
             print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
-            os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            # os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            os.system("echo '/data/test/frame_dir_" + file.split('/')[-1] + "/' >> .gitignore")
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
@@ -253,8 +254,8 @@ class Pipeline:
 
 
 if __name__ == "__main__":
+    newPip = Pipeline(sys.argv[1])
     try:
-        newPip = Pipeline(sys.argv[1])
         print("=======================Start building " + newPip.pipeName + "===========================")
 
         print("Pipeline running ......")
