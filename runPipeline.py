@@ -107,8 +107,7 @@ class Pipeline:
         os.system(cmd)
 
         for file in self.trainFileList:
-            print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
-            os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            os.system("echo '/data/train/frame_dir_" + file.split('/')[-1] + "/' >> .gitignore")
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2,
@@ -142,8 +141,9 @@ class Pipeline:
         os.system("sed -i '10,$ d' test_HIKL2D200326T170529_3_0458_0628_calibrated.mp4.txt")
 
         for file in self.testFileList:
-            print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
-            os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            # print("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            # os.system("git add .gitignore ./data/test/frame_dir_" + file.split('/')[-1] + "/*.jpg")
+            os.system("echo '/data/test/frame_dir_" + file.split('/')[-1] + "/' >> .gitignore")
 
         # modify config/traffic.data
         self.overwriteLine("config/traffic.data", 2, 
@@ -253,8 +253,8 @@ class Pipeline:
 
 
 if __name__ == "__main__":
+    newPip = Pipeline(sys.argv[1])
     try:
-        newPip = Pipeline(sys.argv[1])
         print("=======================Start building " + newPip.pipeName + "===========================")
 
         print("Pipeline running ......")
