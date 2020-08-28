@@ -152,7 +152,7 @@ class Pipeline:
 
     def train(self):
         # for darknet usecase only
-        src = self.config.get("Train", "src")
+        print("Train stage is not available yet.")
 
     def validate(self):
         # for darknet usecase only
