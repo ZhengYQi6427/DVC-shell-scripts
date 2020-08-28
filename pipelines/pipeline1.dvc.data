@@ -6,6 +6,7 @@ branch=b1
 [Remote]
 needSetRemote=true
 dataRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic
+cacheRemote=ssh:ra_yz3622@128.59.20.251:/volume1/project/research.traffic/Data/Data.intermediate/caches/example-to-get-started
 NAS_account=ra_yz3622
 NAS_password=summer
 

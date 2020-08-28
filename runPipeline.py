@@ -44,10 +44,8 @@ class Pipeline:
             print(e)
 
     def setRemote(self):
-        self.dataRemote = self.config.get("Remote", "dataRemote")
-        cmd = "dvc remote add -f dataRemote " + self.dataRemote
-        os.system(cmd)
-        cmd = "dvc remote add -f gitHubRepo " + self.gitHubRepo
+        self.cacheRemote = self.config.get("Remote", "cacheRemote")
+        cmd = "dvc remote add -f cacheRemote " + self.cacheRemote
         os.system(cmd)
         os.system("git add .")
         os.system("git commit .dvc/config -m 'Set dvc remote'")
@@ -220,7 +218,7 @@ class Pipeline:
 
     def end(self):
         print("Finish building pipelines")
-        os.system("cat metrics.json >> report.md")
+        os.system("cat metrics.json >> report.json")
         os.system("git add .")
         os.system("git commit -m 'Finish building pipelines'")
         # os.system("git tag -a 'new branch " + self.branch + "' -m '"+ self.branch + " new branch'")
@@ -238,6 +236,8 @@ class Pipeline:
                 os.system(cmd)
                 # Track a data file
                 cmd = "dvc add " + dir + name
+                os.system(cmd)
+                cmd = "dvc push -r " + self.cacheRemote
                 os.system(cmd)
                 os.system("git add .gitignore " + dir + name)
 
